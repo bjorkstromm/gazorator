@@ -8,6 +8,8 @@ namespace Gazorator.Scripting
 {
     public abstract class RazorScriptHostBase
     {
+        public HtmlRenderer Html { get; } 
+
         protected TextWriter Output { get; }
 
         protected virtual HtmlEncoder HtmlEncoder { get; } = HtmlEncoder.Default;
@@ -15,11 +17,12 @@ namespace Gazorator.Scripting
         public RazorScriptHostBase(TextWriter output)
         {
             Output = output ?? throw new ArgumentNullException(nameof(output));
+            Html = new HtmlRenderer();
         }
 
         public virtual void WriteLiteral(object value)
         {
-            WriteLiteral(Convert.ToString(value, CultureInfo.InvariantCulture));
+           WriteLiteral(Convert.ToString(value, CultureInfo.InvariantCulture));
         }
 
         public virtual void WriteLiteral(string value)
@@ -37,6 +40,12 @@ namespace Gazorator.Scripting
 
         public virtual void Write(object value)
         {
+            if (value is IRazorLiteral element)
+            {
+                WriteLiteral(element.Render());
+                return;
+            }
+
             Write(Convert.ToString(value, CultureInfo.InvariantCulture));
         }
     }
