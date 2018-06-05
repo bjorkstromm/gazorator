@@ -90,6 +90,23 @@ function GetProxyEnabledWebClient
     return $wc
 }
 
+function Remove-PathVariable([string]$VariableToRemove)
+{
+    $path = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if ($path -ne $null)
+    {
+        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+    }
+
+    $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
+    if ($path -ne $null)
+    {
+        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+    }
+}
+
 Write-Host "Preparing to run build script..."
 
 if(!$PSScriptRoot){
@@ -106,7 +123,30 @@ $PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
 $PACKAGES_CONFIG_MD5 = Join-Path $TOOLS_DIR "packages.config.md5sum"
 $ADDINS_PACKAGES_CONFIG = Join-Path $ADDINS_DIR "packages.config"
 $MODULES_PACKAGES_CONFIG = Join-Path $MODULES_DIR "packages.config"
+$DOTNET_CHANNEL = "Current";
+$DOTNET_VERSION = "2.1.300";
+$DOTNET_INSTALLER_URI = "https://dot.net/v1/dotnet-install.ps1";
 
+# Get .NET Core CLI path if installed.
+$FoundDotNetCliVersion = $null;
+if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+    $FoundDotNetCliVersion = dotnet --version;
+}
+
+if($FoundDotNetCliVersion -ne $DOTNET_VERSION) {
+    $InstallPath = Join-Path $PSScriptRoot ".dotnet"
+    if (!(Test-Path $InstallPath)) {
+        mkdir -Force $InstallPath | Out-Null;
+    }
+    (New-Object System.Net.WebClient).DownloadFile($DOTNET_INSTALLER_URI, "$InstallPath\dotnet-install.ps1");
+    & $InstallPath\dotnet-install.ps1 -Channel $DOTNET_CHANNEL -Version $DOTNET_VERSION -InstallDir $InstallPath;
+
+    Remove-PathVariable "$InstallPath"
+    $env:PATH = "$InstallPath;$env:PATH"
+}
+
+$ENV:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+$ENV:DOTNET_CLI_TELEMETRY_OPTOUT=1
 $ENV:CAKE_SETTINGS_SKIPVERIFICATION = "true"
 
 # Make sure tools folder exists
