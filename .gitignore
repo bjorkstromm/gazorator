@@ -286,3 +286,11 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+#Cake (generated)
+[Tt]ools/
+BuildArtifacts/
+![Tt]ools/packages.config
+
+#VS Code
+.vscode/

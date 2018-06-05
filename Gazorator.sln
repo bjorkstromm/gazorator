@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2011
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gazorator", "src\Gazorator\Gazorator.csproj", "{DAC00C66-6160-44DD-8412-D38229026250}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{CFC49255-CEDC-49D7-AF18-7CEAE9970556}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F9A6DB59-9592-42D4-A498-B2D97CB6D2B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gazorator.Console", "sample\Gazorator.Console\Gazorator.Console.csproj", "{18AF6377-1AB4-483D-8231-FBE7B39AC250}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAC00C66-6160-44DD-8412-D38229026250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAC00C66-6160-44DD-8412-D38229026250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAC00C66-6160-44DD-8412-D38229026250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAC00C66-6160-44DD-8412-D38229026250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18AF6377-1AB4-483D-8231-FBE7B39AC250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AF6377-1AB4-483D-8231-FBE7B39AC250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AF6377-1AB4-483D-8231-FBE7B39AC250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18AF6377-1AB4-483D-8231-FBE7B39AC250}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DAC00C66-6160-44DD-8412-D38229026250} = {F9A6DB59-9592-42D4-A498-B2D97CB6D2B5}
+		{18AF6377-1AB4-483D-8231-FBE7B39AC250} = {CFC49255-CEDC-49D7-AF18-7CEAE9970556}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {73C9CC56-8AA4-4274-A3A6-27C5795C119C}
+	EndGlobalSection
+EndGlobal
