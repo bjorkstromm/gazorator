@@ -1,11 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Version>0.0.0</Version>
+    <PackageId>Gazorator</PackageId>
+    <Title>Gazorator</Title>
+    <Authors>mholo65</Authors>
+    <Description>Enables Razor outside ASP.NET</Description>
+    <Copyright>2018 Martin Björkström</Copyright>
+    <PackageLicenseUrl>https://github.com/mholo65/gazorator/blob/develop/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/mholo65/gazorator</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="2.1.0-preview2-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="2.1.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.7.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.4.0" />
   </ItemGroup>
