@@ -291,3 +291,6 @@ __pycache__/
 [Tt]ools/
 BuildArtifacts/
 ![Tt]ools/packages.config
+
+#VS Code
+.vscode/
