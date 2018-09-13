@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 
 namespace Gazorator.Scripting
 {
+    // See https://github.com/aspnet/Common/blob/master/shared/Microsoft.Extensions.RazorViews.Sources/BaseView.cs
     public abstract class RazorScriptHostBase
     {
         public HtmlRenderer Html { get; } 

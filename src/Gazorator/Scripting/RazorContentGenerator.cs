@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Gazorator.Extensions;
 using Microsoft.CodeAnalysis;
@@ -15,7 +16,7 @@ namespace Gazorator.Scripting
         public Task Generate(string csharpScript)
         {
             var options = ScriptOptions.Default
-                .AddReferences(GetMetadataReferences())
+                .WithReferences(GetMetadataReferences())
                 .WithImports("System")
                 .WithMetadataResolver(ScriptMetadataResolver.Default);
 
@@ -33,9 +34,15 @@ namespace Gazorator.Scripting
             return roslynScript.RunAsync(GetGlobalsObject());
         }
 
-        protected virtual IEnumerable<MetadataReference> GetMetadataReferences()
+        protected virtual IEnumerable<Assembly> GetMetadataReferences()
         {
-            yield return MetadataReference.CreateFromFile(typeof(RazorContentGeneratorBase).Assembly.Location);
+            var entryAssembly = Assembly.GetEntryAssembly();
+            yield return entryAssembly;
+
+            foreach (var reference in entryAssembly.GetReferencedAssemblies())
+            {
+                yield return Assembly.Load(reference);
+            }
         }
 
         protected abstract Type GetGlobalsType();
@@ -82,11 +89,11 @@ namespace Gazorator.Scripting
             _model = model;
         }
 
-        protected override IEnumerable<MetadataReference> GetMetadataReferences()
-        {
-            return base.GetMetadataReferences()
-                .Append(MetadataReference.CreateFromFile(typeof(TModel).Assembly.Location));
-        }
+        //protected override IEnumerable<Assembly> GetMetadataReferences()
+        //{
+        //    return base.GetMetadataReferences()
+        //        .Append(typeof(TModel).Assembly);
+        //}
 
         protected override RazorScriptHostBase GetGlobalsObject()
         {
