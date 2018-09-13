@@ -10,6 +10,8 @@ BuildParameters.SetParameters(context: Context,
                             repositoryOwner: "mholo65",
                             repositoryName: "gazorator",
                             appVeyorAccountName: "mholo65",
+                            shouldRunDupFinder: false,
+                            shouldRunInspectCode: false,
                             shouldRunDotNetCorePack: true);
 
 BuildParameters.PrintParameters(Context);
