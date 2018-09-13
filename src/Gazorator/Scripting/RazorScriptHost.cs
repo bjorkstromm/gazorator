@@ -1,5 +1,6 @@
 ﻿using Gazorator.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.Encodings.Web;
@@ -35,6 +36,11 @@ namespace Gazorator.Scripting
 
         public virtual void Write(string value)
         {
+            if (value == null)
+            {
+                return;
+            }
+
             WriteLiteral(HtmlEncoder.Encode(value));
         }
 
@@ -47,6 +53,35 @@ namespace Gazorator.Scripting
             }
 
             Write(Convert.ToString(value, CultureInfo.InvariantCulture));
+        }
+
+        private string AttributeEnding { get; set; }
+        private List<string> AttributeValues { get; set; }
+
+        public virtual void BeginWriteAttribute(string name, string prefix, int prefixOffset, string suffix, int suffixOffset, int attributeValuesCount)
+        {
+            Output.Write(prefix);
+            AttributeEnding = suffix;
+        }
+
+        public void WriteAttributeValue(string prefix, int prefixOffset, object value, int valueOffset, int valueLength, bool isLiteral)
+        {
+            if (AttributeValues == null)
+            {
+                AttributeValues = new List<string>();
+            }
+
+            AttributeValues.Add(value.ToString());
+        }
+
+        public virtual void EndWriteAttribute()
+        {
+            var attributes = string.Join(" ", AttributeValues);
+            Output.Write(attributes);
+            AttributeValues = null;
+
+            Output.Write(AttributeEnding);
+            AttributeEnding = null;
         }
     }
 
