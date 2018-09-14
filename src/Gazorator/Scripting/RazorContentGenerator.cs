@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,14 +35,14 @@ namespace Gazorator.Scripting
             return roslynScript.RunAsync(GetGlobalsObject());
         }
 
-        protected virtual IEnumerable<Assembly> GetMetadataReferences()
+        protected virtual IEnumerable<MetadataReference> GetMetadataReferences()
         {
             var entryAssembly = Assembly.GetEntryAssembly();
-            yield return entryAssembly;
+            yield return MetadataReference.CreateFromFile(entryAssembly.Location);
 
             foreach (var reference in entryAssembly.GetReferencedAssemblies())
             {
-                yield return Assembly.Load(reference);
+                yield return MetadataReference.CreateFromFile(Assembly.Load(reference).Location);
             }
         }
 
@@ -74,6 +75,7 @@ namespace Gazorator.Scripting
     {
         private readonly TextWriter _textWriter;
         private readonly TModel _model;
+        private readonly bool _isDynamicAssembly;
 
         public RazorContentGenerator(TModel model, TextWriter textWriter)
         {
@@ -87,22 +89,43 @@ namespace Gazorator.Scripting
                 throw new ArgumentException($"{typeof(TModel).GetType().FullName} must be public.");
             }
             _model = model;
+            _isDynamicAssembly = typeof(TModel).Assembly.IsDynamic ||
+                string.IsNullOrEmpty(typeof(TModel).Assembly.Location);
         }
 
-        //protected override IEnumerable<Assembly> GetMetadataReferences()
-        //{
-        //    return base.GetMetadataReferences()
-        //        .Append(typeof(TModel).Assembly);
-        //}
+        protected override IEnumerable<MetadataReference> GetMetadataReferences()
+        {
+            return _isDynamicAssembly ?
+                base.GetMetadataReferences()
+                    .Append(MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location)) :
+                base.GetMetadataReferences()
+                    .Append(MetadataReference.CreateFromFile(typeof(TModel).Assembly.Location));
+        }
 
         protected override RazorScriptHostBase GetGlobalsObject()
         {
-            return new RazorScriptHost<TModel>(_model, _textWriter);
+            return _isDynamicAssembly ?
+                new RazorScriptHostDynamic(ToExpandoObject(_model), _textWriter):
+                new RazorScriptHost<TModel>(_model, _textWriter) as RazorScriptHostBase;
         }
 
         protected override Type GetGlobalsType()
         {
-            return typeof(RazorScriptHost<TModel>);
+            return _isDynamicAssembly ?
+                typeof(RazorScriptHostDynamic) :
+                typeof(RazorScriptHost<TModel>);
+        }
+
+        private static ExpandoObject ToExpandoObject(TModel model)
+        {
+            IDictionary<string, object> expando = new ExpandoObject();
+
+            foreach(var property in typeof(TModel).GetProperties())
+            {
+                expando.Add(property.Name, property.GetValue(model));
+            }
+
+            return (ExpandoObject)expando;
         }
     }
 }

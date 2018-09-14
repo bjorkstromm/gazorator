@@ -1,6 +1,7 @@
 ﻿using Gazorator.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Text.Encodings.Web;
@@ -105,5 +106,17 @@ namespace Gazorator.Scripting
         }
 
         public TModel Model { get; }
+    }
+
+    public sealed class RazorScriptHostDynamic : RazorScriptHostBase
+    {
+        private readonly ExpandoObject _model;
+
+        public RazorScriptHostDynamic(ExpandoObject model, TextWriter output) : base(output)
+        {
+            _model = model ?? throw new ArgumentNullException(nameof(model));
+        }
+
+        public dynamic Model => _model;
     }
 }
