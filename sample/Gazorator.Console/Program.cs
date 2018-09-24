@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using AndroidBinderator;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Gazorator.Console
 {
@@ -24,6 +25,7 @@ namespace Gazorator.Console
                 Gazorator.Default
                     .WithOutput(writer)
                     .WithModel(new BindingProjectModel())
+                    .WithReferences(typeof(XDocument).Assembly)
                     .ProcessAsync("./Views/Xamarin.cshtml").Wait();
 
                 System.Console.WriteLine(writer.ToString());
