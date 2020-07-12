@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 #---------------------------------#
 #  Build Script                   #
@@ -18,7 +18,7 @@ test: off
 #        Branches to build        #
 #---------------------------------#
 branches:
-  # Whitelist
+  # Allow-list
   only:
     - develop
     - master
