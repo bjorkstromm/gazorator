@@ -15,10 +15,12 @@ namespace Gazorator.Scripting
     internal abstract class RazorContentGeneratorBase
     {
         private IReadOnlyCollection<Assembly> _references;
+        protected readonly DynamicViewBag _viewBag;
 
-        protected RazorContentGeneratorBase(IEnumerable<Assembly> references)
+        protected RazorContentGeneratorBase(IEnumerable<Assembly> references, DynamicViewBag viewBag)
         {
             _references = new List<Assembly>(references);
+            _viewBag = viewBag;
         }
 
         public Task Generate(string csharpScript)
@@ -74,14 +76,14 @@ namespace Gazorator.Scripting
     {
         private readonly TextWriter _textWriter;
 
-        public RazorContentGenerator(TextWriter textWriter, IEnumerable<Assembly> references) : base(references)
+        public RazorContentGenerator(TextWriter textWriter, IEnumerable<Assembly> references, DynamicViewBag viewBag) : base(references, viewBag)
         {
             _textWriter = textWriter ?? throw new ArgumentNullException(nameof(textWriter));
         }
 
         protected override RazorScriptHostBase GetGlobalsObject()
         {
-            return new RazorScriptHost(_textWriter);
+            return new RazorScriptHost(_textWriter, _viewBag);
         }
 
         protected override Type GetGlobalsType()
@@ -96,7 +98,7 @@ namespace Gazorator.Scripting
         private readonly TModel _model;
         private readonly bool _isDynamicAssembly;
 
-        public RazorContentGenerator(TModel model, TextWriter textWriter, IEnumerable<Assembly> references) : base(references)
+        public RazorContentGenerator(TModel model, TextWriter textWriter, IEnumerable<Assembly> references, DynamicViewBag viewBag) : base(references, viewBag)
         {
             _textWriter = textWriter ?? throw new ArgumentNullException(nameof(textWriter));
             if (typeof(TModel).IsNullable() && model == null)
@@ -118,14 +120,15 @@ namespace Gazorator.Scripting
                 base.GetMetadataReferences()
                     .Append(MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location)) :
                 base.GetMetadataReferences()
+                    .Append(MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location))
                     .Append(MetadataReference.CreateFromFile(typeof(TModel).Assembly.Location));
         }
 
         protected override RazorScriptHostBase GetGlobalsObject()
         {
             return _isDynamicAssembly ?
-                new RazorScriptHostDynamic(ToExpandoObject(_model), _textWriter):
-                new RazorScriptHost<TModel>(_model, _textWriter) as RazorScriptHostBase;
+                new RazorScriptHostDynamic(ToExpandoObject(_model), _textWriter, _viewBag):
+                new RazorScriptHost<TModel>(_model, _textWriter, _viewBag) as RazorScriptHostBase;
         }
 
         protected override Type GetGlobalsType()

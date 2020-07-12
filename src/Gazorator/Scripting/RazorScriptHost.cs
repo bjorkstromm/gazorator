@@ -11,16 +11,19 @@ namespace Gazorator.Scripting
     // See https://github.com/aspnet/Common/blob/master/shared/Microsoft.Extensions.RazorViews.Sources/BaseView.cs
     public abstract class RazorScriptHostBase
     {
-        public HtmlRenderer Html { get; } 
+        public dynamic ViewBag { get; }
+
+        public HtmlRenderer Html { get; }
 
         protected TextWriter Output { get; }
 
         protected virtual HtmlEncoder HtmlEncoder { get; } = HtmlEncoder.Default;
 
-        public RazorScriptHostBase(TextWriter output)
+        public RazorScriptHostBase(TextWriter output, DynamicViewBag viewBag)
         {
             Output = output ?? throw new ArgumentNullException(nameof(output));
             Html = new HtmlRenderer();
+            ViewBag = viewBag;
         }
 
         public virtual void WriteLiteral(object value)
@@ -89,14 +92,14 @@ namespace Gazorator.Scripting
 
     public sealed class RazorScriptHost : RazorScriptHostBase
     {
-        public RazorScriptHost(TextWriter output) : base(output)
+        public RazorScriptHost(TextWriter output, DynamicViewBag viewBag) : base(output, viewBag)
         {
         }
     }
 
     public sealed class RazorScriptHost<TModel> : RazorScriptHostBase
     {
-        public RazorScriptHost(TModel model, TextWriter output) : base(output)
+        public RazorScriptHost(TModel model, TextWriter output, DynamicViewBag viewBag) : base(output, viewBag)
         {
             if (typeof(TModel).IsNullable() && model == null)
             {
@@ -112,7 +115,7 @@ namespace Gazorator.Scripting
     {
         private readonly ExpandoObject _model;
 
-        public RazorScriptHostDynamic(ExpandoObject model, TextWriter output) : base(output)
+        public RazorScriptHostDynamic(ExpandoObject model, TextWriter output, DynamicViewBag viewBag) : base(output, viewBag)
         {
             _model = model ?? throw new ArgumentNullException(nameof(model));
         }

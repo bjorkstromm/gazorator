@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Gazorator\Gazorator.csproj" />
+    <PackageReference Include="Cake.Issues" Version="0.9.0-beta0002" />
+    <PackageReference Include="Cake.Issues.Reporting" Version="0.9.0-beta0001" />
+    <PackageReference Include="Cake.Issues.Reporting.Generic" Version="0.8.2" />
+    <PackageReference Include="Cake.Core" Version="0.38.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,6 +19,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Views\Xamarin.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Views\CakeIssues.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
