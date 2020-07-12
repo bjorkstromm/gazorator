@@ -1,8 +1,6 @@
 #---------------------------------#
-#    environment configuration    #
+#  Build Image                    #
 #---------------------------------#
-
-# Build worker image (VM template)
 image: Visual Studio 2019
 
 #---------------------------------#
@@ -11,14 +9,27 @@ image: Visual Studio 2019
 build_script:
   - ps: .\build.ps1 -Target AppVeyor
 
+#---------------------------------#
 # Tests
+#---------------------------------#
 test: off
+
+#---------------------------------#
+#  Pull Requests                  #
+#---------------------------------#
+pull_requests:
+  do_not_increment_build_number: true
+
+#---------------------------------#
+#  General                        #
+#---------------------------------#
+skip_branch_with_pr: true
 
 #---------------------------------#
 #        Branches to build        #
 #---------------------------------#
 branches:
-  # Allow-list
+  # Allow-List
   only:
     - develop
     - master
@@ -29,4 +40,4 @@ branches:
 #  Build Cache                    #
 #---------------------------------#
 cache:
-- tools -> setup.cake
+- tools -> setup.cake, tools/packages.config
