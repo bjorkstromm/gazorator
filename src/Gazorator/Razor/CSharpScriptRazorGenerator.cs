@@ -14,29 +14,15 @@ namespace Gazorator.Razor
             var fileSystem = RazorProjectFileSystem.Create(directoryRoot);
             var projectEngine = RazorProjectEngine.Create(RazorConfiguration.Default, fileSystem, builder =>
             {
-                //builder
-                //    .SetNamespace("Remove")
-                //    .SetBaseType("Microsoft.Extensions.RazorViews.BaseView")
-                //    .ConfigureClass((document, @class) =>
-                //    {
-                //        @class.ClassName = Path.GetFileNameWithoutExtension(document.Source.FilePath);
-                //        @class.Modifiers.Clear();
-                //        @class.Modifiers.Add("internal");
-                //    });
-
-                FunctionsDirective.Register(builder);
-                InheritsDirective.Register(builder);
+                // Register directives.
                 SectionDirective.Register(builder);
 
-                builder.Features.Remove(builder.Features.OfType<IRazorDocumentClassifierPass>().Single());
+                // We replace the default document classifier, because we can't have namespace declaration ins script.
+                var defaultDocumentClassifier = builder.Features
+                    .OfType<IRazorDocumentClassifierPass>()
+                    .FirstOrDefault(x => x.Order == 1000);
+                builder.Features.Remove(defaultDocumentClassifier);
                 builder.Features.Add(new CSharpScriptDocumentClassifierPass());
-
-                //configure?.Invoke(builder);
-
-//                builder.AddDefaultImports(@"
-//@using System
-//@using System.Threading.Tasks
-//");
             });
 
             _projectEngine = projectEngine;

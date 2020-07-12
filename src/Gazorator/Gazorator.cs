@@ -44,6 +44,19 @@ namespace Gazorator
             return razorContentGenerator.Generate(csharpScript);
         }
 
+        public virtual async Task ProcessTemplateAsync(string template)
+        {
+            var tempFile = Path.GetTempFileName();
+
+            using (var stream = File.OpenWrite(tempFile))
+            using (var writer = new StreamWriter(stream))
+            {
+                await writer.WriteAsync(template);
+            }
+
+            await ProcessAsync(tempFile);
+        }
+
         private sealed class DefaultGazorator : Gazorator
         {
             public DefaultGazorator(TextWriter output = null, params Assembly[] references) : base(output, references)
