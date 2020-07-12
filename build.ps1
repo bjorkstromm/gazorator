@@ -124,7 +124,7 @@ $PACKAGES_CONFIG_MD5 = Join-Path $TOOLS_DIR "packages.config.md5sum"
 $ADDINS_PACKAGES_CONFIG = Join-Path $ADDINS_DIR "packages.config"
 $MODULES_PACKAGES_CONFIG = Join-Path $MODULES_DIR "packages.config"
 $DOTNET_CHANNEL = "Current";
-$DOTNET_VERSION = "2.1.300";
+$DOTNET_VERSION = "3.1.301";
 $DOTNET_INSTALLER_URI = "https://dot.net/v1/dotnet-install.ps1";
 
 # Get .NET Core CLI path if installed.
