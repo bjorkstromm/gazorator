@@ -60,14 +60,23 @@ namespace Gazorator
         public virtual async Task ProcessTemplateAsync(string template)
         {
             var tempFile = Path.GetTempFileName();
-
-            using (var stream = File.OpenWrite(tempFile))
-            using (var writer = new StreamWriter(stream))
+            try
             {
-                await writer.WriteAsync(template);
-            }
+                using (var stream = File.OpenWrite(tempFile))
+                using (var writer = new StreamWriter(stream))
+                {
+                    await writer.WriteAsync(template);
+                }
 
-            await ProcessAsync(tempFile);
+                await ProcessAsync(tempFile);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
+            }
         }
 
         private sealed class DefaultGazorator : Gazorator
