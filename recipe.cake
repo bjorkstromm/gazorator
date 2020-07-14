@@ -2,7 +2,7 @@
 
 Environment.SetVariableNames();
 
-BuildParameters.SetParameters(context: Context, 
+BuildParameters.SetParameters(context: Context,
                             buildSystem: BuildSystem,
                             sourceDirectoryPath: "./src",
                             solutionFilePath: "./Gazorator.sln",
@@ -17,7 +17,7 @@ BuildParameters.SetParameters(context: Context,
 BuildParameters.PrintParameters(Context);
 
 ToolSettings.SetToolSettings(context: Context,
-                            dupFinderExcludePattern: new string[] { 
+                            dupFinderExcludePattern: new string[] {
                                 BuildParameters.RootDirectoryPath + "/src/Gazorator/**/*.AssemblyInfo.cs"});
 
 Build.RunDotNetCore();
