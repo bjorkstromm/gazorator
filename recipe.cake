@@ -2,7 +2,7 @@
 
 Environment.SetVariableNames();
 
-BuildParameters.SetParameters(context: Context, 
+BuildParameters.SetParameters(context: Context,
                             buildSystem: BuildSystem,
                             sourceDirectoryPath: "./src",
                             solutionFilePath: "./Gazorator.sln",
@@ -12,12 +12,13 @@ BuildParameters.SetParameters(context: Context,
                             appVeyorAccountName: "mholo65",
                             shouldRunDupFinder: false,
                             shouldRunInspectCode: false,
-                            shouldRunDotNetCorePack: true);
+                            shouldRunDotNetCorePack: true,
+                            shouldRunGitVersion: true);
 
 BuildParameters.PrintParameters(Context);
 
 ToolSettings.SetToolSettings(context: Context,
-                            dupFinderExcludePattern: new string[] { 
+                            dupFinderExcludePattern: new string[] {
                                 BuildParameters.RootDirectoryPath + "/src/Gazorator/**/*.AssemblyInfo.cs"});
 
 Build.RunDotNetCore();
