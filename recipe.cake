@@ -12,7 +12,8 @@ BuildParameters.SetParameters(context: Context,
                             appVeyorAccountName: "mholo65",
                             shouldRunDupFinder: false,
                             shouldRunInspectCode: false,
-                            shouldRunDotNetCorePack: true);
+                            shouldRunDotNetCorePack: true,
+                            shouldRunGitVersion: true);
 
 BuildParameters.PrintParameters(Context);
 
