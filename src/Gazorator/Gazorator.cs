@@ -16,6 +16,8 @@ namespace Gazorator
         protected IEnumerable<Assembly> References { get; } = new List<Assembly>();
         protected Action<dynamic> ConfigureViewBag { get; }
 
+        protected IDictionary<string, object> ViewBagDictionary { get; }
+
         protected Gazorator(TextWriter output = null, Action<dynamic> configureViewBag = null, params Assembly[] references)
         {
             Output = output ?? TextWriter.Null;
@@ -23,7 +25,14 @@ namespace Gazorator
             References = new List<Assembly>(references);
         }
 
-        public static Gazorator Default => new DefaultGazorator(TextWriter.Null);
+        protected Gazorator(TextWriter output = null, IDictionary<string, object> viewBagDictionary = null, params Assembly[] references)
+        {
+            Output = output ?? TextWriter.Null;
+            ViewBagDictionary = viewBagDictionary;
+            References = new List<Assembly>(references);
+        }
+
+        public static Gazorator Default => new DefaultGazorator(TextWriter.Null, configureViewBag: null);
 
         public Gazorator<TModel> WithModel<TModel>(TModel model)
         {
@@ -45,13 +54,27 @@ namespace Gazorator
             return new DefaultGazorator(Output, configureViewBag, References.ToArray());
         }
 
+        public Gazorator WithViewBag(IDictionary<string, object> viewBagDictionary)
+        {
+            return new DefaultGazorator(Output, viewBagDictionary, References.ToArray());
+        }
+
         public virtual Task ProcessAsync(string filePath)
         {
             var razorGenerator = new CSharpScriptRazorGenerator(Path.GetDirectoryName(filePath));
             var csharpScript = razorGenerator.Generate(filePath);
 
-            var viewBag = new DynamicViewBag();
-            ConfigureViewBag?.Invoke(viewBag);
+            DynamicViewBag viewBag = null;
+
+            if (ViewBagDictionary != null)
+            {
+                viewBag = new DynamicViewBag(ViewBagDictionary);
+            }
+            else
+            {
+                viewBag = new DynamicViewBag();
+                ConfigureViewBag?.Invoke(viewBag);
+            }
 
             var razorContentGenerator = new RazorContentGenerator(Output, References, viewBag);
             return razorContentGenerator.Generate(csharpScript);
@@ -84,6 +107,10 @@ namespace Gazorator
             public DefaultGazorator(TextWriter output = null, Action<dynamic> configureViewBag = null, params Assembly[] references) : base(output, configureViewBag, references)
             {
             }
+
+            public DefaultGazorator(TextWriter output = null, IDictionary<string, object> viewbagDictionary = null, params Assembly[] references) : base(output, viewbagDictionary, references)
+            {
+            }
         }
     }
 
@@ -92,6 +119,11 @@ namespace Gazorator
         private readonly TModel _model;
 
         internal Gazorator(TextWriter output, TModel model, Action<dynamic> configureViewBag, params Assembly[] references) : base(output, configureViewBag, references)
+        {
+            _model = model;
+        }
+
+        internal Gazorator(TextWriter output, TModel model, IDictionary<string, object> viewBagDictionary, params Assembly[] references) : base(output, viewBagDictionary, references)
         {
             _model = model;
         }
@@ -111,13 +143,27 @@ namespace Gazorator
             return new Gazorator<TModel>(Output, _model, configureViewBag, References.ToArray());
         }
 
+        public Gazorator WithViewBag(IDictionary<string, object> viewBagDictionary)
+        {
+            return new Gazorator<TModel>(Output, _model, viewBagDictionary, References.ToArray());
+        }
+
         public override Task ProcessAsync(string filePath)
         {
             var razorGenerator = new CSharpScriptRazorGenerator(Path.GetDirectoryName(filePath));
             var csharpScript = razorGenerator.Generate(filePath);
 
-            var viewBag = new DynamicViewBag();
-            ConfigureViewBag?.Invoke(viewBag);
+            DynamicViewBag viewBag = null;
+
+            if (ViewBagDictionary != null)
+            {
+                viewBag = new DynamicViewBag(ViewBagDictionary);
+            }
+            else
+            {
+                viewBag = new DynamicViewBag();
+                ConfigureViewBag?.Invoke(viewBag);
+            }
 
             var razorContentGenerator = new RazorContentGenerator<TModel>(_model, Output, References, viewBag);
             return razorContentGenerator.Generate(csharpScript);

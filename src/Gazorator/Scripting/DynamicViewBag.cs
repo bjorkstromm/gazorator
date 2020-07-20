@@ -6,7 +6,16 @@ namespace Gazorator.Scripting
 {
     public class DynamicViewBag : DynamicObject
     {
-        private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+        private readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
+
+        public DynamicViewBag()
+        {
+        }
+
+        public DynamicViewBag(IDictionary<string, object> viewBagDictionary)
+        {
+            _properties = viewBagDictionary;
+        }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
