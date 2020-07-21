@@ -102,9 +102,13 @@ namespace Gazorator.Console
                         typeof(Cake.Issues.Reporting.Generic.DevExtremeTheme).Assembly,
                         typeof(Cake.Core.IO.FilePath).Assembly
                         )
-                    .WithViewBag(ViewBag =>
+                    // .WithViewBag(ViewBag =>
+                    // {
+                    //     ViewBag.Title = "Foo";
+                    // })
+                    .WithViewBag(new Dictionary<string, object>
                     {
-                        ViewBag.Title = "Foo";
+                        ["Title"] = "FooBar"
                     })
                     .ProcessAsync("./Views/CakeIssues.cshtml");
 
