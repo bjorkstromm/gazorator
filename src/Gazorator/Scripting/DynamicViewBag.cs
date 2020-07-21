@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 
 namespace Gazorator.Scripting
 {
     public class DynamicViewBag : DynamicObject
     {
-        private readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
+        private readonly IDictionary<string, object> _properties;
 
-        public DynamicViewBag()
+        public DynamicViewBag(IEnumerable<KeyValuePair<string, object>> properties = null)
         {
-        }
-
-        public DynamicViewBag(IDictionary<string, object> viewBagDictionary)
-        {
-            _properties = viewBagDictionary;
+            _properties = properties?.ToDictionary(x => x.Key, x => x.Value)
+                ?? new Dictionary<string, object>();
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
