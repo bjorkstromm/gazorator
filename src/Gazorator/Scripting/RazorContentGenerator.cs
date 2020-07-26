@@ -54,11 +54,17 @@ namespace Gazorator.Scripting
             yield return MetadataReference.CreateFromFile(typeof(System.Data.DataTable).Assembly.Location); // System.Data
 
             var entryAssembly = Assembly.GetEntryAssembly();
-            yield return MetadataReference.CreateFromFile(entryAssembly.Location);
-
-            foreach (var reference in entryAssembly.GetReferencedAssemblies())
+            if (entryAssembly != null)
             {
-                yield return MetadataReference.CreateFromFile(Assembly.Load(reference).Location);
+                if (entryAssembly.Location != null)
+                {
+                    yield return MetadataReference.CreateFromFile(entryAssembly.Location);
+                }
+
+                foreach (var reference in entryAssembly.GetReferencedAssemblies())
+                {
+                    yield return MetadataReference.CreateFromFile(Assembly.Load(reference).Location);
+                }
             }
 
             foreach (var reference in _references)
