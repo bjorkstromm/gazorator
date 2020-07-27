@@ -63,11 +63,15 @@ namespace Gazorator.Scripting
 
                 foreach (var reference in entryAssembly.GetReferencedAssemblies())
                 {
-                    yield return MetadataReference.CreateFromFile(Assembly.Load(reference).Location);
+                    var referencedAssembly = Assembly.Load(reference);
+                    if (referencedAssembly.Location != null)
+                    {
+                        yield return MetadataReference.CreateFromFile(referencedAssembly.Location);
+                    }
                 }
             }
 
-            foreach (var reference in _references)
+            foreach (var reference in _references.Where(r => r.Location != null))
             {
                 yield return MetadataReference.CreateFromFile(reference.Location);
             }
