@@ -294,3 +294,4 @@ BuildArtifacts/
 #VS Code
 .vscode/
 .ionide
+.dotnet
