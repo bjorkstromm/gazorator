@@ -5,7 +5,7 @@ $DotNetUnixInstallerUri = 'https://dot.net/v1/dotnet-install.sh'
 $DotNetChannel = 'LTS'
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-[string] $DotNetVersion = '3.1.301'
+[string] $DotNetVersion = '3.1.402'
 
 ###########################################################################
 # INSTALL .NET CORE CLI
