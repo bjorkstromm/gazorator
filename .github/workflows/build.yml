@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - "release/**"
+      - "hotfix/**"
+      - "feature/**"
+    paths-ignore:
+      - "README.md"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v2.3.2
+        with:
+          sumbodules: true
+      - name: Fetch all tags and branches
+        run: git fetch --prune --unshallow
+      - name: Cache Tools
+        uses: actions/cache@v2.1.1
+        with:
+          path: tools
+          key: ${{ runner.os }}-tools-${{ hashFiles('recipe.cake') }}
+      - name: Build Addin
+        uses: cake-build/cake-action@v1
+        with:
+          script-path: recipe.cake
+          target: CI
+          verbosity: Diagnostic
+          cake-version: 0.38.4
+          cake-bootstrap: true
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: ${{ matrix.os }}-artifacts
+          path: |
+            BuildArtifacts/report.html
+            BuildArtifacts/packages/**/*.nupkg
+            BuildArtifacts/**/coverlet/*.xml
