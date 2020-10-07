@@ -1,4 +1,4 @@
-# Grazorator
+# Gazorator
 
 ![gazorator logo](./assets/grazorator-horizontal-logo.png)
 
