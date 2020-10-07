@@ -2,7 +2,7 @@
 
 ![gazorator logo](./assets/grazorator-horizontal-logo.png)
 
-Grazorator is a `dotnet` tool that empowers developers to generate XML based outputs using the power of the Razor View Engine.
+Grazorator is a `dotnet` library that empowers developers to generate XML based outputs using the power of the Razor View Engine.
 
 Supported output formats include: 
 
