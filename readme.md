@@ -1,8 +1,8 @@
 # Gazorator
 
-![gazorator logo](./assets/grazorator-horizontal-logo.png)
+![gazorator logo](./assets/horizontal-logo.png)
 
-Grazorator is a `dotnet` library that empowers developers to generate XML based outputs using the power of the Razor View Engine.
+Gazorator is a `dotnet` library that empowers developers to generate XML based outputs using the power of the Razor View Engine.
 
 Supported output formats include: 
 
@@ -10,17 +10,9 @@ Supported output formats include:
 - XML
 - XAML
 
-## Getting Started
-
-To get started install the tool using the `dotnet` cli with the following command.
-
-```c#
-dotnet tool install Grazorator --global
-```
-
 ## Sample
 
-There are three parts to running Grazorator:
+There are three parts to running Gazorator:
 
 1. The **Template**
 2. The **Model** or data
@@ -71,7 +63,7 @@ Templates can be any XML based language, and Razor syntax is recommended due to 
 
 ### Models
 
-Similar to Razor Views, Grazorator templates can take a view model. Here we see the usage of `WithModel` passing in a value.
+Similar to Razor Views, Gazorator templates can take a view model. Here we see the usage of `WithModel` passing in a value.
 
 ```c#
 using var writer = new StringWriter();
