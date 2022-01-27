@@ -52,6 +52,7 @@ namespace Gazorator.Scripting
             yield return MetadataReference.CreateFromFile(typeof(System.Xml.XmlReader).Assembly.Location); // System.Xml
             yield return MetadataReference.CreateFromFile(typeof(System.Xml.Linq.XDocument).Assembly.Location); // System.Xml.Linq
             yield return MetadataReference.CreateFromFile(typeof(System.Data.DataTable).Assembly.Location); // System.Data
+            yield return MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location); // dynamic
 
             var entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly != null)
@@ -127,10 +128,8 @@ namespace Gazorator.Scripting
         protected override IEnumerable<MetadataReference> GetMetadataReferences()
         {
             return _isDynamicAssembly ?
+                base.GetMetadataReferences() :
                 base.GetMetadataReferences()
-                    .Append(MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location)) :
-                base.GetMetadataReferences()
-                    .Append(MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location))
                     .Append(MetadataReference.CreateFromFile(typeof(TModel).Assembly.Location));
         }
 
